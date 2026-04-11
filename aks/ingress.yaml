@@ -1,0 +1,23 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: petclinic-ingress
+  annotations:
+    cert-manager.io/issuer: letsencrypt-prod
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: test.master2026.work.gd    # <-- Updated domain
+      http:
+        paths:
+          - path: /petclinic
+            pathType: Prefix
+            backend:
+              service:
+                name: petclinic-service
+                port:
+                  number: 9966
+  tls:
+    - hosts:
+        - test.master2026.work.gd       # <-- Updated domain
+      secretName: petclinic-tls
