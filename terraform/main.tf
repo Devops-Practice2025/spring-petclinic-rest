@@ -23,7 +23,7 @@ resource "azurerm_kubernetes_cluster" "aks" {
   name = var.aks_cluster_name
   location = var.location
   resource_group_name = data.azurerm_resource_group.rg.name
-  dns_prefix = "${var.dns_prefix}"
+  dns_prefix = "petclinic"
   kubernetes_version = var.kubernetes_version
   default_node_pool { 
     name = "default"
