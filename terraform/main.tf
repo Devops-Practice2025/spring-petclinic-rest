@@ -15,7 +15,7 @@ resource "azurerm_container_registry" "acr" {
   location = var.location
   resource_group_name = data.azurerm_resource_group.rg.name
   sku = "Basic"
-  admin_user_enabled = true  
+  admin_enabled = true  
 
   }
 
@@ -48,6 +48,31 @@ resource "azurerm_kubernetes_cluster" "aks" {
   role_based_access_control_enabled = true
   
   tags = var.tags
+}
+
+resource "azurerm_role_assignment" "aks_acr_pull" {
+  principal_id                     = azurerm_kubernetes_cluster.aks.kubelet_identity[0].object_id
+  role_definition_name             = "AcrPull"
+  scope                            = azurerm_container_registry.acr.id
+  skip_service_principal_aad_check = true
+}
+
+resource "azurerm_key_vault" "secrets" {
+  name                        = "kv-${random_string.suffix.result}"
+  location                    = var.location
+  resource_group_name         = data.azurerm_resource_group.rg.name
+  enabled_for_disk_encryption = true
+  tenant_id                   = data.azurerm_client_config.current.tenant_id
+  soft_delete_retention_days  = 7
+  purge_protection_enabled    = false
+  sku_name = "standard"
+
+  access_policy {
+    tenant_id = data.azurerm_client_config.current.tenant_id
+    object_id = data.azurerm_client_config.current.object_id
+
+    secret_permissions = ["Get", "List", "Set", "Delete", "Purge"]
+  }
 }
 
 # Store ACR credentials in Key Vault
