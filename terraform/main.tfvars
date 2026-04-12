@@ -1,6 +1,6 @@
 
 # Just specify your existing resource group name
-resource_group_name   = "petclinic-rg"  # Your existing RG name
+resource_group_name   = "nebula-sandbox-karthikeyangopal-62ded517"  # Your existing RG name
 
 # Location will be auto-detected from the RG
 # You can omit location or keep it (must match RG location)
