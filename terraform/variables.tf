@@ -1,7 +1,9 @@
-variable "resource_group" {
-default = "test-rg"
-}
-variable "location" {
-default = "eastus"
- 
-}
+variable "resource_group" { }
+variable "location" { }
+variable "acr_name" { }
+variable "aks_cluster_name" { }
+variable "node_count" { }
+variable "vm_size" { }
+variable "dns_prefix" { }
+variable "kubernetes_version" { }
+variable "tags" { } 
