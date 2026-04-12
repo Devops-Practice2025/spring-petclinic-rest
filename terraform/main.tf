@@ -34,10 +34,12 @@ resource "azurerm_kubernetes_cluster" "aks" {
     os_disk_type = "Managed"
     type = "VirtualMachineScaleSets"
     node_taints = []
-    identity {
-      type = "SystemAssigned"
-    }
   }
+
+  identity {
+    type = "SystemAssigned"
+  }
+
     network_profile {
       network_plugin = "azure"
       load_balancer_sku = "standard"
@@ -76,5 +78,3 @@ resource "local_file" "kube_config" {
   filename   = "kubeconfig"
   sensitive_content = azurerm_kubernetes_cluster.aks.kube_config_raw
 }
-
-
