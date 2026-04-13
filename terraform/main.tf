@@ -25,7 +25,7 @@ resource "azurerm_kubernetes_cluster" "aks" {
   location = var.location
   resource_group_name = data.azurerm_resource_group.rg.name
   dns_prefix = "petclinic"
-  kubernetes_version = var.kubernetes_version
+  
   default_node_pool { 
     name = "default"
     node_count = var.node_count
@@ -34,7 +34,7 @@ resource "azurerm_kubernetes_cluster" "aks" {
     os_disk_size_gb = 40
     os_disk_type = "Managed"
     type = "VirtualMachineScaleSets"
-    node_taints = []
+    
   }
 
   identity {
