@@ -9,7 +9,6 @@ variables:
   imageTag: $(Build.BuildId)
   resourceGroupName: nebula-sandbox-karthikeyangopal-9b56a248
   aksName: test-aks
-
 stages:
 - stage: Build_and_Push
   jobs:
@@ -23,8 +22,8 @@ stages:
       displayName: Login to ACR
       inputs:
         command: login
-        containerRegistry: test-azure
-
+        containerRegistry: test-acr
+        
     - task: Docker@2
       displayName: Build Image
       inputs:
