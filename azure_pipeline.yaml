@@ -23,7 +23,7 @@ stages:
       displayName: Login to ACR
       inputs:
         command: login
-        containerRegistry: acr-service-connection
+        containerRegistry: test-azure
 
     - task: Docker@2
       displayName: Build Image
@@ -62,7 +62,7 @@ stages:
       displayName: Deploy using YAML
       inputs:
         connectionType: Azure Resource Manager
-        azureSubscriptionEndpoint: aks-service-connection
+        azureSubscriptionEndpoint: test-azure
         azureResourceGroup: $(resourceGroupName)
         kubernetesCluster: $(aksName)
         command: apply
