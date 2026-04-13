@@ -11,7 +11,7 @@ aks_cluster_name      = "test-aks"
 acr_name              = "testacr"
 kubernetes_version    = "1.27"
 node_count            = 1
-node_vm_size          = "standard_d2s_v2"
+node_vm_size          = "standard_ds2_v2"
 acr_sku               = "Basic"
 
 tags = {
