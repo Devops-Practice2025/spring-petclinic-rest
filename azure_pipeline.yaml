@@ -1,0 +1,70 @@
+trigger:
+  branches:
+    include:
+      - main
+
+variables:
+  acrLoginServer: testacrw6q309.azurecr.io
+  imageName: petclinic-app
+  imageTag: $(Build.BuildId)
+  resourceGroupName: nebula-sandbox-karthikeyangopal-9b56a248
+  aksName: test-aks
+
+stages:
+- stage: Build_and_Push
+  jobs:
+  - job: Build
+    pool:
+      vmImage: ubuntu-latest
+    steps:
+    - checkout: self
+
+    - task: Docker@2
+      displayName: Login to ACR
+      inputs:
+        command: login
+        containerRegistry: acr-service-connection
+
+    - task: Docker@2
+      displayName: Build Image
+      inputs:
+        command: build
+        dockerfile: Dockerfile
+        repository: $(imageName)
+        buildContext: $(System.DefaultWorkingDirectory)
+        tags: |
+          $(imageTag)
+          latest
+
+    - task: Docker@2
+      displayName: Push Image
+      inputs:
+        command: push
+        repository: $(imageName)
+        tags: |
+          $(imageTag)
+          latest
+
+- stage: Deploy_to_AKS
+  dependsOn: Build_and_Push
+  jobs:
+  - job: Deploy
+    pool:
+      vmImage: ubuntu-latest
+    steps:
+    - checkout: self
+
+    - script: |
+        sed -i 's|__IMAGE__|$(acrLoginServer)/$(imageName):$(imageTag)|g' aks/deployment.yaml
+      displayName: Inject image tag
+
+    - task: Kubernetes@1
+      displayName: Deploy using YAML
+      inputs:
+        connectionType: Azure Resource Manager
+        azureSubscriptionEndpoint: aks-service-connection
+        azureResourceGroup: $(resourceGroupName)
+        kubernetesCluster: $(aksName)
+        command: apply
+        useConfigurationFile: true
+        configuration: aks/*.yaml
