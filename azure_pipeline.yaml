@@ -60,7 +60,7 @@ stages:
     - checkout: self
 
     - script: |
-        sed -i 's|__IMAGE__|$(acrLoginServer)/$(imageName):$(imageTag)|g' aks/deploy.yaml
+        sed -i 's|__IMAGE__|$(acrLoginServer)/$(imageName):$(imageTag)|g' spring-petclinic-rest/aks/deploy.yaml
       displayName: Inject image tag
 
     - task: Kubernetes@1
@@ -72,4 +72,4 @@ stages:
         kubernetesCluster: $(aksName)
         command: apply
         useConfigurationFile: true
-        configuration: aks/*.yaml
+        configuration: spring-petclinic-rest/aks/*.yaml
