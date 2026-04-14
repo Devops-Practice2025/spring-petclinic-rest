@@ -24,6 +24,14 @@ stages:
         scriptLocation: inlineScript
         inlineScript: |
           az acr login --name testacrw6q309
+    - task: Maven@4
+      displayName: Build JAR
+      inputs:
+        mavenPomFile: pom.xml
+        goals: clean package
+        options: -DskipTests
+        javaHomeOption: JDKVersion
+        jdkVersionOption: 17
 
     - task: Docker@2
       displayName: Build Image
