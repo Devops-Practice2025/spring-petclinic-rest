@@ -2,10 +2,6 @@
 trigger:
   - none
   
-paths:
-    include:
-    - terraform/*
-
 variables:
   azureServiceConnection: 'test-azure'  # Using Managed Identity
   resourceGroupName: 'nebula-sandbox-karthikeyangopal-7114dfd4'
