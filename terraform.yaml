@@ -1,0 +1,105 @@
+# azure_pipeline.yaml
+trigger:
+  branches:
+    include:
+    - main
+  paths:
+    include:
+    - terraform/*
+
+variables:
+  azureServiceConnection: 'test-azure'  # Using Managed Identity
+  resourceGroupName: 'nebula-sandbox-karthikeyangopal-7114dfd4'
+  terraformVersion: '1.5.7'
+  terraformWorkingDir: '$(System.DefaultWorkingDirectory)/terraform'
+
+stages:
+- stage: Validate
+  displayName: 'Validate Terraform'
+  jobs:
+  - job: Validate
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+    - checkout: self
+    - task: TerraformInstaller@1
+      inputs:
+        terraformVersion: $(terraformVersion)
+    - script: |
+        cd $(terraformWorkingDir)
+        terraform init -backend=false
+        terraform validate
+      displayName: 'Terraform Validate'
+
+- stage: Deploy
+  displayName: 'Deploy Infrastructure'
+  jobs:
+  - job: Deploy
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+    - checkout: self
+    
+    - task: TerraformInstaller@1
+      inputs:
+        terraformVersion: $(terraformVersion)
+    
+    - script: |
+        cd $(terraformWorkingDir)
+        terraform init -reconfigure
+        terraform plan -out=tfplan
+      displayName: 'Terraform Plan'
+      env:
+        ARM_USE_MSI: true
+        ARM_SUBSCRIPTION_ID: $(ARM_SUBSCRIPTION_ID)
+    
+    - script: |
+        cd $(terraformWorkingDir)
+        terraform apply -auto-approve tfplan
+      displayName: 'Terraform Apply'
+      env:
+        ARM_USE_MSI: true
+        ARM_SUBSCRIPTION_ID: $(ARM_SUBSCRIPTION_ID)
+    
+    - script: |
+        cd $(terraformWorkingDir)
+        terraform output -json > outputs.json
+      displayName: 'Capture Outputs'
+    
+    - task: PublishBuildArtifacts@1
+      inputs:
+        PathtoPublish: '$(terraformWorkingDir)/outputs.json'
+        ArtifactName: 'terraform-outputs'
+
+- stage: Configure_K8s
+  displayName: 'Configure Kubernetes'
+  dependsOn: Deploy
+  jobs:
+  - job: GetKubeconfig
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+    - task: AzureCLI@2
+      inputs:
+        azureSubscription: $(azureServiceConnection)
+        scriptType: 'bash'
+        scriptLocation: 'inlineScript'
+        inlineScript: |
+          # Get AKS credentials
+          az aks get-credentials \
+            --resource-group $(resourceGroupName) \
+            --name test-aks \
+            --file $(Pipeline.Workspace)/kubeconfig \
+            --overwrite-existing
+          
+          # Test connection
+          kubectl get nodes --kubeconfig $(Pipeline.Workspace)/kubeconfig
+          
+          # Store kubeconfig
+          mkdir -p $(Build.ArtifactStagingDirectory)/k8s
+          cp $(Pipeline.Workspace)/kubeconfig $(Build.ArtifactStagingDirectory)/k8s/kubeconfig
+      
+    - task: PublishBuildArtifacts@1
+      inputs:
+        PathtoPublish: '$(Build.ArtifactStagingDirectory)/k8s'
+        ArtifactName: 'kubeconfig'
