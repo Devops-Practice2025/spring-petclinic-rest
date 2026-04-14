@@ -62,19 +62,9 @@ stages:
     - checkout: self
 
     - script: |
-        # Check if the file exists at root level first
-        if [ -f "deploy.yaml" ]; then
-          sed -i 's|testacr090426.azurecr.io/petclinic-app:v1|$(acrLoginServer)/$(imageName):$(imageTag)|g' deploy.yaml
-          echo "Updated deploy.yaml at root level"
-        elif [ -f "spring-petclinic-rest/deploy.yaml" ]; then
-          sed -i 's|testacr090426.azurecr.io/petclinic-app:v1|$(acrLoginServer)/$(imageName):$(imageTag)|g' spring-petclinic-rest/deploy.yaml
-          echo "Updated spring-petclinic-rest/deploy.yaml"
-        else
-          echo "Could not find deploy.yaml file"
-          ls -la
-          find . -name "*.yaml" -o -name "*.yml"
-          exit 1
-        fi
+        # Update the image tag in the correct path
+        sed -i 's|testacr090426.azurecr.io/petclinic-app:v1|$(acrLoginServer)/$(imageName):$(imageTag)|g' aks/deploy.yaml
+        echo "Updated aks/deploy.yaml with image: $(acrLoginServer)/$(imageName):$(imageTag)"
       displayName: Inject image tag
 
     - task: Kubernetes@1
@@ -86,4 +76,4 @@ stages:
         kubernetesCluster: $(aksName)
         command: apply
         useConfigurationFile: true
-        configuration: deploy.yaml  # Change this to the correct path
+        configuration: aks/deploy.yaml
