@@ -60,7 +60,7 @@ stages:
     - checkout: self
 
     - script: |
-        sed -i 's|__IMAGE__|$(acrLoginServer)/$(imageName):$(imageTag)|g' aks/deployment.yaml
+        sed -i 's|__IMAGE__|$(acrLoginServer)/$(imageName):$(imageTag)|g' aks/deploy.yaml
       displayName: Inject image tag
 
     - task: Kubernetes@1
