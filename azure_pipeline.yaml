@@ -7,6 +7,7 @@ variables:
   imageTag: $(Build.BuildId)
   resourceGroupName: nebula-sandbox-karthikeyangopal-9b56a248
   aksName: test-aks
+
 stages:
 - stage: Build_and_Push
   jobs:
@@ -24,6 +25,7 @@ stages:
         scriptLocation: inlineScript
         inlineScript: |
           az acr login --name testacrw6q309
+
     - task: Maven@4
       displayName: Build JAR
       inputs:
@@ -60,7 +62,19 @@ stages:
     - checkout: self
 
     - script: |
-        sed -i 's|__IMAGE__|$(acrLoginServer)/$(imageName):$(imageTag)|g' spring-petclinic-rest/aks/deploy.yaml
+        # Check if the file exists at root level first
+        if [ -f "deploy.yaml" ]; then
+          sed -i 's|testacr090426.azurecr.io/petclinic-app:v1|$(acrLoginServer)/$(imageName):$(imageTag)|g' deploy.yaml
+          echo "Updated deploy.yaml at root level"
+        elif [ -f "spring-petclinic-rest/deploy.yaml" ]; then
+          sed -i 's|testacr090426.azurecr.io/petclinic-app:v1|$(acrLoginServer)/$(imageName):$(imageTag)|g' spring-petclinic-rest/deploy.yaml
+          echo "Updated spring-petclinic-rest/deploy.yaml"
+        else
+          echo "Could not find deploy.yaml file"
+          ls -la
+          find . -name "*.yaml" -o -name "*.yml"
+          exit 1
+        fi
       displayName: Inject image tag
 
     - task: Kubernetes@1
@@ -72,4 +86,4 @@ stages:
         kubernetesCluster: $(aksName)
         command: apply
         useConfigurationFile: true
-        configuration: spring-petclinic-rest/aks/*.yaml
+        configuration: deploy.yaml  # Change this to the correct path
