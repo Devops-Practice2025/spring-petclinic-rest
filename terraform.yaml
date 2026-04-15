@@ -29,19 +29,10 @@ stages:
               terraform validate
             displayName: 'Terraform Validate'
 
-  - stage: Deploy
-    displayName: 'Deploy Infrastructure'
-    jobs:
-      - job: Deploy
-        pool:
-          vmImage: 'ubuntu-latest'
+      - job: Plan
+        dependsOn: Validate
         steps:
           - checkout: self
-
-          - task: TerraformInstaller@1
-            inputs:
-              terraformVersion: $(terraformVersion)
-
           - script: |
               cd $(terraformWorkingDir)
               terraform plan -var-file=main.tfvars
