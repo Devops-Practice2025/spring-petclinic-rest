@@ -1,10 +1,9 @@
 # azure_pipeline.yaml
 trigger:
   - none
-  - manual
 
 pool:
-vmImage: 'ubuntu-latest'
+  vmImage: 'ubuntu-latest'
 
 variables:
   azureServiceConnection: 'test-azure'  # Using Managed Identity
