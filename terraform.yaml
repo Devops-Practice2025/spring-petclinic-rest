@@ -28,7 +28,7 @@ stages:
           - task: AzureCLI@2
             displayName: Check Azure auth
             inputs:
-              azureSubscription: 'my-azure-connection'
+              azureSubscription: $(azureServiceConnection)
               scriptType: bash
               scriptLocation: inlineScript
               inlineScript: |
