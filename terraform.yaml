@@ -25,6 +25,16 @@ stages:
           - task: TerraformInstaller@1
             inputs:
               terraformVersion: 'latest'
+          - task: AzureCLI@2
+            displayName: Check Azure auth
+            inputs:
+              azureSubscription: 'my-azure-connection'
+              scriptType: bash
+              scriptLocation: inlineScript
+              inlineScript: |
+                az account show
+                az account get-access-token --resource https://management.azure.com/ >/dev/null
+                echo "Auth OK"
 
           - task: TerraformTaskV4@4
             displayName: Terraform Init
