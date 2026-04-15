@@ -46,6 +46,8 @@ stages:
               command: plan
               workingDirectory: $(terraformWorkingDir)
               environmentServiceNameAzureRM: $(azureServiceConnection)
+              commandOptions: '-var-file=main.tfvars'
+
               
 
   
