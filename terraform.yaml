@@ -20,17 +20,23 @@ stages:
           vmImage: 'ubuntu-latest'
         steps:
           - checkout: self
-          - task: TerraformInstaller@1
-            inputs:
-              terraformVersion: $(terraformVersion)
-          - script: |
-              cd $(terraformWorkingDir)
-              terraform init -backend=false
-              terraform validate
-              terraform plan -var-file=main.tfvars
-            env:
-              serviceConnection: $(azureServiceConnection)
-            displayName: 'Terraform Plan'
+
+      - task: TerraformTaskV4@4
+        displayName: Terraform Init
+        inputs:
+          provider: azurerm
+          command: init
+          workingDirectory: $(terraformWorkingDir)
+          backendServiceArm: $(azureServiceConnection)
+
+      - task: TerraformTaskV4@4
+        displayName: Terraform Plan
+        inputs:
+          provider: azurerm
+          command: plan
+          workingDirectory: $(terraformWorkingDir)
+          environmentServiceNameAzureRM: $(azureServiceConnection)
+
   
       # - job: Apply
       #   pool:
