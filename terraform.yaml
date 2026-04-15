@@ -32,7 +32,7 @@ stages:
               provider: azurerm
               command: init
               workingDirectory: $(terraformWorkingDir)
-              environmentServiceNameAzureRM: $(azureServiceConnection)
+              backendServiceArm: $(azureServiceConnection)
               backendAzureRmResourceGroupName: $(resourceGroupName)
               backendAzureRmStorageAccountName: 'tfstateacct'
               backendAzureRmContainerName: 'tfstate'
