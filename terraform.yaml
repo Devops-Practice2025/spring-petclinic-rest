@@ -27,17 +27,9 @@ stages:
               cd $(terraformWorkingDir)
               terraform init -backend=false
               terraform validate
-            displayName: 'Terraform Validate'
-
-      - job: Plan
-        dependsOn: Validate
-        steps:
-          - checkout: self
-          - script: |
-              cd $(terraformWorkingDir)
               terraform plan -var-file=main.tfvars
             env:
-              serviceConnection: test-azure
+              serviceConnection: $(azureServiceConnection)
             displayName: 'Terraform Plan'
   
       # - job: Apply
