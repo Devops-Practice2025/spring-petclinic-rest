@@ -46,4 +46,22 @@ stages:
           - script: |
               cd $(terraformWorkingDir)
               terraform plan -var-file=main.tfvars
+            env:
+              serviceConnection: test-azure
+            displayName: 'Terraform Plan'
+  
+      - job: Apply
+        pool:
+          vmImage: 'ubuntu-latest'
+        steps:
+          - checkout: self
+
+          - script: |
+              cd $(terraformWorkingDir)
+              terraform apply -var-file=main.tfvars -auto-approve
+            env:
+              serviceConnection: test-azure
+            displayName: 'Terraform Apply'
+
+
               
