@@ -21,6 +21,12 @@ stages:
         steps:
           - checkout: self
 
+          - task: TerraformInstallerV4@4
+            displayName: Install Terraform
+            inputs:
+              version: $(terraformVersion)
+              workingDirectory: $(terraformWorkingDir)    
+
           - task: TerraformTaskV4@4
             displayName: Terraform Init
             inputs:
