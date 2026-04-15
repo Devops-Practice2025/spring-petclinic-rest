@@ -17,7 +17,7 @@ stages:
     jobs:
       - job: Validate
         pool:
-          
+          vmImage: 'ubuntu-latest'
         steps:
           - checkout: self
           - task: TerraformInstaller@1
