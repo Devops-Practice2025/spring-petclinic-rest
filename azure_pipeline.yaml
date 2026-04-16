@@ -7,7 +7,7 @@ variables:
   imageTag: $(Build.BuildId)
   resourceGroupName: 'nebula-sandbox-karthikeyangopal-666c9a16'
   aksName: test-aks
-  azureConn: test-azure
+  azureServiceConnection: test-azure
 
 
 
@@ -41,7 +41,7 @@ stages:
     - task: AzureCLI@2
       displayName: Build & Push Image to ACR (WIF)
       inputs:
-        azureSubscription: test-azure
+        azureSubscription: $(azureServiceConnection)
         scriptType: bash
         scriptLocation: inlineScript
         inlineScript: |
@@ -81,6 +81,10 @@ stages:
         createNamespace: true
         waitForExecution: true
         arguments: '--set installCRDs=true --version v1.13.3'
+        connectionType: 'Azure Resource Manager'
+        azureSubscription: $(azureServiceConnection)
+        azureResourceGroup: $(resourceGroupName)
+        kubernetesCluster: $(aksName)
 
     - task: KubectlInstaller@0
       displayName: 'Verify cert-manager'
