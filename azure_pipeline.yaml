@@ -76,8 +76,8 @@ stages:
         kubernetesCluster: $(aksName)
         command: apply
         useConfigurationFile: true
-        configuration: 
-          - aks/deploy.yaml
-          - aks/service.yaml
-          - aks/ingress.yaml
-          - aks/clusterissuer.yaml
+        configuration: |
+          aks/deploy.yaml
+          aks/service.yaml
+          aks/ingress.yaml
+          aks/clusterissuer.yaml
