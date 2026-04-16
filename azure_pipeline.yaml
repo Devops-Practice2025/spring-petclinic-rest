@@ -7,6 +7,9 @@ variables:
   imageTag: $(Build.BuildId)
   resourceGroupName: 'nebula-sandbox-karthikeyangopal-666c9a16'
   aksName: test-aks
+  azureConn: test-azure
+
+
 
 stages:
 - stage: Build_and_Push
@@ -65,7 +68,32 @@ stages:
         # Update the image tag in the correct path
         sed -i 's|testacr090426.azurecr.io/petclinic-app:v1|$(acrLoginServer)/$(imageName):$(imageTag)|g' aks/deploy.yaml
         echo "Updated aks/deploy.yaml with image: $(acrLoginServer)/$(imageName):$(imageTag)"
-      displayName: Inject image tag
+      displayName: Inject image 
+
+    - task: HelmDeploy@0
+      displayName: 'Install cert-manager via Helm'
+      inputs:
+        connectionType: 'Azure Resource Manager'
+        azureSubscriptionEndpoint: $(azureConn)
+        azureResourceGroup: $(resourceGroupName)
+        kubernetesCluster: $(aksName)
+        command: 'upgrade'
+        chartType: 'Name'
+        chartName: 'cert-manager/cert-manager'
+        releaseName: 'cert-manager'
+        namespace: 'cert-manager'
+        createNamespace: true
+        waitForExecution: true
+        arguments: |
+          --set installCRDs=true
+          --version v1.13.3
+
+    - task: KubectlTool@1
+      displayName: 'Verify cert-manager'
+      inputs:
+        command: 'get'
+        arguments: 'pods -n cert-manager' 
+  
 
     - task: Kubernetes@1
       displayName: Deploy using YAML
