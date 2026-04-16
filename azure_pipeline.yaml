@@ -88,7 +88,7 @@ stages:
           --set installCRDs=true
           --version v1.13.3
 
-    - task: KubectlTool@1
+    - task: KubectlInstaller@0
       displayName: 'Verify cert-manager'
       inputs:
         command: 'get'
