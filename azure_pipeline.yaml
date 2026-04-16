@@ -71,12 +71,8 @@ stages:
       displayName: Inject image 
 
     - task: HelmDeploy@0
-      displayName: 'Install cert-manager via Helm'
+      displayName: 'Install cert-manager'
       inputs:
-        connectionType: 'Azure Resource Manager'
-        azureSubscriptionEndpoint: $(azureConn)
-        azureResourceGroup: $(resourceGroupName)
-        kubernetesCluster: $(aksName)
         command: 'upgrade'
         chartType: 'Name'
         chartName: 'cert-manager/cert-manager'
@@ -84,9 +80,7 @@ stages:
         namespace: 'cert-manager'
         createNamespace: true
         waitForExecution: true
-        arguments: |
-          --set installCRDs=true
-          --version v1.13.3
+        arguments: '--set installCRDs=true --version v1.13.3'
 
     - task: KubectlInstaller@0
       displayName: 'Verify cert-manager'
