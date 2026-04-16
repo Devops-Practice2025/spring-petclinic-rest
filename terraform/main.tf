@@ -2,13 +2,7 @@ data "azurerm_resource_group" "rg" {
   name = var.resource_group
  
 }
-
-resource "random_string" "suffix" {
-  length = 6
-  special = false
-  upper= false
-}
-  
+ 
 
 resource "azurerm_container_registry" "acr" {
   
@@ -61,7 +55,7 @@ resource "azurerm_role_assignment" "aks_acr_pull" {
 }
 
 resource "azurerm_key_vault" "secrets" {
-  name                        = "kv-${random_string.suffix.result}"
+  name                        = var.kv_name
   location                    = var.location
   resource_group_name         = data.azurerm_resource_group.rg.name
   enabled_for_disk_encryption = true
