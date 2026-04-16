@@ -99,8 +99,8 @@ resource "azurerm_key_vault_secret" "acr_login_server" {
 data "azurerm_client_config" "current" {}
 
 # Output the kubeconfig
-resource "local_file" "kube_config" {
-  depends_on = [azurerm_kubernetes_cluster.aks]
-  filename   = "kubeconfig"
-  sensitive_content = azurerm_kubernetes_cluster.aks.kube_config_raw
+# With this:
+resource "local_sensitive_file" "kube_config" {
+  content  = azurerm_kubernetes_cluster.aks.kube_config_raw
+  filename = "${path.module}/kube_config"
 }

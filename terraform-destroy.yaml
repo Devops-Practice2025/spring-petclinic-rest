@@ -11,6 +11,7 @@ variables:
   resourceGroupName: 'nebula-sandbox-karthikeyangopal-666c9a16'
   terraformVersion: '1.5.7'
   terraformWorkingDir: '$(System.DefaultWorkingDirectory)/terraform'
+  backendStorageAccountName: 'tfstateacct1604'
 
 stages:
   - stage: Validate
@@ -44,7 +45,7 @@ stages:
               workingDirectory: $(terraformWorkingDir)
               backendServiceArm: $(azureServiceConnection)
               backendAzureRmResourceGroupName: $(resourceGroupName)
-              backendAzureRmStorageAccountName: 'tfstateacct'
+              backendAzureRmStorageAccountName: $(backendStorageAccountName)
               backendAzureRmContainerName: 'tfstate'
               backendAzureRmKey: 'prod.tfstate'
 
