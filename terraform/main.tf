@@ -25,6 +25,8 @@ resource "azurerm_kubernetes_cluster" "aks" {
   location = var.location
   resource_group_name = data.azurerm_resource_group.rg.name
   dns_prefix          = "petclinic"
+  oidc_issuer_enabled       = true
+  workload_identity_enabled = true
   
   default_node_pool {
     name = "default"
@@ -67,6 +69,7 @@ resource "azurerm_key_vault" "secrets" {
   soft_delete_retention_days  = 7
   purge_protection_enabled    = false
   sku_name = "standard"
+
 
   access_policy {
     tenant_id = data.azurerm_client_config.current.tenant_id
