@@ -2,10 +2,10 @@ trigger:
   - none
 
 variables:
-  acrLoginServer: testacrw6q309.azurecr.io
+  acrLoginServer: testacr1604.azurecr.io
   imageName: petclinic-app
   imageTag: $(Build.BuildId)
-  resourceGroupName: nebula-sandbox-karthikeyangopal-9b56a248
+  resourceGroupName: 'nebula-sandbox-karthikeyangopal-666c9a16'
   aksName: test-aks
 
 stages:
@@ -24,7 +24,7 @@ stages:
         scriptType: bash
         scriptLocation: inlineScript
         inlineScript: |
-          az acr login --name testacrw6q309
+          az acr login --name $(acrLoginServer)
 
     - task: Maven@4
       displayName: Build JAR
@@ -42,7 +42,7 @@ stages:
         scriptType: bash
         scriptLocation: inlineScript
         inlineScript: |
-          az acr login --name testacrw6q309
+          az acr login --name $(acrLoginServer)
 
           docker build \
             -t $(acrLoginServer)/$(imageName):$(imageTag) \
