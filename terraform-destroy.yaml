@@ -58,10 +58,10 @@ stages:
               environmentServiceNameAzureRM: $(azureServiceConnection)
               commandOptions: '-var-file=main.tfvars'
           - task: TerraformTaskV4@4
-            displayName: Terraform Apply
+            displayName: Terraform Destroy
             inputs:
               provider: azurerm
-              command: apply
+              command: destroy
               workingDirectory: $(terraformWorkingDir)
               environmentServiceNameAzureRM: $(azureServiceConnection)
               commandOptions: '-var-file=main.tfvars'
