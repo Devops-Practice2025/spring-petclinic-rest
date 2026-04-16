@@ -75,7 +75,7 @@ stages:
       inputs:
         command: 'upgrade'
         chartType: 'Name'
-        chartName: 'cert-manager/cert-manager'
+        chartName: 'jetstack/cert-manager'  # Correct: jetstack repo, cert-manager chart
         releaseName: 'cert-manager'
         namespace: 'cert-manager'
         createNamespace: true
@@ -84,8 +84,8 @@ stages:
         connectionType: 'Azure Resource Manager'
         azureSubscription: $(azureServiceConnection)
         azureResourceGroup: $(resourceGroupName)
-        kubernetesCluster: $(aksName)
-
+        kubernetesCluster: $(aksClusterName)
+        
     - task: KubectlInstaller@0
       displayName: 'Verify cert-manager'
       inputs:
