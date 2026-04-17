@@ -6,6 +6,3 @@ variable "acr_sku" { }
 variable "node_count" { }
 variable "node_vm_size" { }
 variable "tags" { } 
-variable "kv_name" {
-  
-}
