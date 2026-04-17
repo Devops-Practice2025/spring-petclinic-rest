@@ -70,21 +70,26 @@ stages:
         echo "Updated aks/deploy.yaml with image: $(acrLoginServer)/$(imageName):$(imageTag)"
       displayName: Inject image 
 
-    - task: HelmDeploy@0
-      displayName: 'Install cert-manager'
+    - task: AzureCLI@2
+      displayName: 'Install cert-manager with Helm'
       inputs:
-        command: 'upgrade'
-        chartType: 'Name'
-        chartName: 'jetstack/cert-manager'  # Correct: jetstack repo, cert-manager chart
-        releaseName: 'cert-manager'
-        namespace: 'cert-manager'
-        createNamespace: true
-        waitForExecution: true
-        arguments: '--set installCRDs=true --version v1.13.3'
-        connectionType: 'Azure Resource Manager'
-        azureSubscription: $(azureServiceConnection)
-        azureResourceGroup: $(resourceGroupName)
-        kubernetesCluster: $(aksName)
+        azureSubscription: '$(azureServiceConnection)'
+        scriptType: bash
+        scriptLocation: inlineScript
+        inlineScript: |
+          # Connect to your AKS cluster
+          az aks get-credentials \
+            --resource-group '$(resourceGroupName)' \
+            --name '$(aksClusterName)'
+          
+          # Run the helm command (exactly as you wanted)
+          helm upgrade --install cert-manager jetstack/cert-manager \
+            --repo https://charts.jetstack.io \
+            --namespace cert-manager \
+            --create-namespace \
+            --set installCRDs=true \
+            --version v1.9.1 \
+            --wait
         
     - task: KubectlInstaller@0
       displayName: 'Verify cert-manager'
