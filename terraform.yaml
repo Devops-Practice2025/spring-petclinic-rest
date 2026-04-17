@@ -8,7 +8,7 @@ pool:
 
 variables:
   azureServiceConnection: 'test-azure'  # Using Managed Identity
-  resourceGroupName: 'nebula-sandbox-karthikeyangopal-666c9a16'
+  resourceGroupName: 'nebula-sandbox-karthikeyangopal-5ae5a688'
   terraformVersion: '1.5.7'
   terraformWorkingDir: '$(System.DefaultWorkingDirectory)/terraform'
   backendStoragecontainerName: 'tfstateacct1604'
