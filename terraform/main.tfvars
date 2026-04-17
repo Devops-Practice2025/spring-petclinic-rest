@@ -12,7 +12,7 @@ acr_name              = "testacr1604"
 node_count            = 1
 node_vm_size          = "standard_ds2_v2"
 acr_sku               = "Basic"
-kv_name               = "testkv-1604"
+#kv_name               = "testkv1604"
 
 tags = {
   Environment = "dev"

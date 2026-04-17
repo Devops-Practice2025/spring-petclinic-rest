@@ -54,43 +54,43 @@ resource "azurerm_role_assignment" "aks_acr_pull" {
   skip_service_principal_aad_check = true
 }
 
-resource "azurerm_key_vault" "secrets" {
-  name                        = var.kv_name
-  location                    = var.location
-  resource_group_name         = data.azurerm_resource_group.rg.name
-  enabled_for_disk_encryption = true
-  tenant_id                   = data.azurerm_client_config.current.tenant_id
-  soft_delete_retention_days  = 7
-  purge_protection_enabled    = false
-  sku_name = "standard"
+# resource "azurerm_key_vault" "secrets" {
+#   name                        = var.kv_name
+#   location                    = var.location
+#   resource_group_name         = data.azurerm_resource_group.rg.name
+#   enabled_for_disk_encryption = true
+#   tenant_id                   = data.azurerm_client_config.current.tenant_id
+#   soft_delete_retention_days  = 7
+#   purge_protection_enabled    = false
+#   sku_name = "standard"
 
 
-  access_policy {
-    tenant_id = data.azurerm_client_config.current.tenant_id
-    object_id = data.azurerm_client_config.current.object_id
+#   access_policy {
+#     tenant_id = data.azurerm_client_config.current.tenant_id
+#     object_id = data.azurerm_client_config.current.object_id
 
-    secret_permissions = ["Get", "List", "Set", "Delete", "Purge"]
-  }
-}
+#     secret_permissions = ["Get", "List", "Set", "Delete", "Purge"]
+#   }
+# }
 
-# Store ACR credentials in Key Vault
-resource "azurerm_key_vault_secret" "acr_username" {
-  name         = "acr-username"
-  value        = azurerm_container_registry.acr.admin_username
-  key_vault_id = azurerm_key_vault.secrets.id
-}
+# # Store ACR credentials in Key Vault
+# resource "azurerm_key_vault_secret" "acr_username" {
+#   name         = "acr-username"
+#   value        = azurerm_container_registry.acr.admin_username
+#   key_vault_id = azurerm_key_vault.secrets.id
+# }
 
-resource "azurerm_key_vault_secret" "acr_password" {
-  name         = "acr-password"
-  value        = azurerm_container_registry.acr.admin_password
-  key_vault_id = azurerm_key_vault.secrets.id
-}
+# resource "azurerm_key_vault_secret" "acr_password" {
+#   name         = "acr-password"
+#   value        = azurerm_container_registry.acr.admin_password
+#   key_vault_id = azurerm_key_vault.secrets.id
+# }
 
-resource "azurerm_key_vault_secret" "acr_login_server" {
-  name         = "acr-login-server"
-  value        = azurerm_container_registry.acr.login_server
-  key_vault_id = azurerm_key_vault.secrets.id
-}
+# resource "azurerm_key_vault_secret" "acr_login_server" {
+#   name         = "acr-login-server"
+#   value        = azurerm_container_registry.acr.login_server
+#   key_vault_id = azurerm_key_vault.secrets.id
+# }
 
 # Data source for current Azure client
 data "azurerm_client_config" "current" {}
