@@ -78,9 +78,9 @@ stages:
         scriptLocation: inlineScript
         inlineScript: |
           set -euo pipefail
-          kubectl create namespace cert-manager --dry-run=client -o yaml | kubectl apply -f -
+          kubectl create namespace cert-manager --dry-run=client -o yaml | kubectl apply --validate=false -f -
           kubectl apply --validate=false -f https://github.com/jetstack/cert-manager/releases/download/v1.9.1/cert-manager.yaml
-        
+    
     - task: KubectlInstaller@0
       displayName: 'Verify cert-manager'
       inputs:
