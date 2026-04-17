@@ -71,25 +71,14 @@ stages:
       displayName: Inject image 
 
     - task: AzureCLI@2
-      displayName: 'Install cert-manager with Helm'
+      displayName: Install cert-manager manifest
       inputs:
-        azureSubscription: '$(azureServiceConnection)'
+        azureSubscription: $(azureServiceConnection)
         scriptType: bash
         scriptLocation: inlineScript
         inlineScript: |
-          # Connect to your AKS cluster
-          az aks get-credentials \
-            --resource-group '$(resourceGroupName)' \
-            --name '$(aksName)'
-          
-          # Run the helm command (exactly as you wanted)
-          helm upgrade --install cert-manager jetstack/cert-manager \
-            --repo https://charts.jetstack.io \
-            --namespace cert-manager \
-            --create-namespace \
-            --set installCRDs=true \
-            --version v1.9.1 \
-            --wait
+          set -euo pipefail
+          kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v1.9.1/cert-manager.yaml
         
     - task: KubectlInstaller@0
       displayName: 'Verify cert-manager'
