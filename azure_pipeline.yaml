@@ -80,7 +80,7 @@ stages:
           # Connect to your AKS cluster
           az aks get-credentials \
             --resource-group '$(resourceGroupName)' \
-            --name '$(aksClusterName)'
+            --name '$(aksName)'
           
           # Run the helm command (exactly as you wanted)
           helm upgrade --install cert-manager jetstack/cert-manager \
