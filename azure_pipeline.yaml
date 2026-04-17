@@ -71,14 +71,15 @@ stages:
       displayName: Inject image 
 
     - task: AzureCLI@2
-      displayName: Install cert-manager manifest
+      displayName: Install cert-manager namespace and manifest
       inputs:
         azureSubscription: $(azureServiceConnection)
         scriptType: bash
         scriptLocation: inlineScript
         inlineScript: |
           set -euo pipefail
-          kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v1.9.1/cert-manager.yaml
+          kubectl create namespace cert-manager --dry-run=client -o yaml | kubectl apply -f -
+          kubectl apply --validate=false -f https://github.com/jetstack/cert-manager/releases/download/v1.9.1/cert-manager.yaml
         
     - task: KubectlInstaller@0
       displayName: 'Verify cert-manager'
