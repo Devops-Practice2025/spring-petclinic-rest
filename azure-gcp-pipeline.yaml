@@ -16,4 +16,4 @@ steps:
     script: |
       export GOOGLE_APPLICATION_CREDENTIALS=$(gcpKey.secureFilePath)
       gcloud auth activate-service-account --key-file=$(gcpKey.secureFilePath)
-      gcloud config set project YOUR_PROJECT_ID
+      gcloud config set project deft-processor-493715-k5
