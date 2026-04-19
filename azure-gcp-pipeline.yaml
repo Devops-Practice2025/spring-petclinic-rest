@@ -40,8 +40,11 @@ steps:
       pwd
       ls -lrt
       cd terraform-gke
+      ls -lrt
       # Initialize Terraform
-      # terraform init -backend-config=backend.tfvars
+       terraform init -backend-config=backend.tfvars
+  env:
+    GOOGLE_APPLICATION_CREDENTIALS: $(gcpKey.secureFilePath)
       
       # # Validate configuration
       # terraform validate
