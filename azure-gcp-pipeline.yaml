@@ -22,10 +22,6 @@ steps:
       gcloud projects list
     
 
-# Setup Terraform
-- task: TerraformInstaller@1
-  inputs:
-    terraformVersion: '1.6.0'
 
 - checkout: self
 
@@ -42,7 +38,7 @@ steps:
       cd terraform-gke
       ls -lrt
       # Initialize Terraform
-       terraform init -backend-config=backend.tf
+       terraform init 
   env:
     GOOGLE_APPLICATION_CREDENTIALS: $(gcpKey.secureFilePath)
       
