@@ -19,7 +19,7 @@ steps:
       export GOOGLE_APPLICATION_CREDENTIALS=$(gcpKey.secureFilePath)
       gcloud auth activate-service-account --key-file=$(gcpKey.secureFilePath)
       gcloud config set project $(project_id)
-    displayName: Google Auth Vertification
+    
 
 # Setup Terraform
 - task: TerraformInstaller@1
