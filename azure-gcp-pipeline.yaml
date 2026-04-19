@@ -1,0 +1,19 @@
+trigger:
+  - main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+- task: DownloadSecureFile@1
+  name: gcpKey
+  inputs:
+    secureFile: 'gcp-key.json'
+
+- task: Bash@3
+  inputs:
+    targetType: 'inline'
+    script: |
+      export GOOGLE_APPLICATION_CREDENTIALS=$(gcpKey.secureFilePath)
+      gcloud auth activate-service-account --key-file=$(gcpKey.secureFilePath)
+      gcloud config set project YOUR_PROJECT_ID
