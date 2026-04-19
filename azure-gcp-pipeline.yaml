@@ -42,7 +42,7 @@ steps:
 
 - task: TerraformInstaller@1
   inputs:
-    terraformVersion: '1.6.0'
+    terraformVersion: '1.9.5'
 
 # Run Terraform with the GCP key
 - task: Bash@3
