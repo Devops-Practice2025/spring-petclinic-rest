@@ -24,6 +24,21 @@ steps:
 
 
 - checkout: self
+- task: Bash@3
+  displayName: 'Enable Required APIs'
+  inputs:
+    targetType: 'inline'
+    script: |
+      gcloud services enable \
+        container.googleapis.com \
+        compute.googleapis.com \
+        iam.googleapis.com \
+        storage-api.googleapis.com \
+        --project $(project_id)
+      echo "APIs enabled; waiting 30s for propagation..."
+      sleep 30
+  env:
+    GOOGLE_APPLICATION_CREDENTIALS: $(gcpKey.secureFilePath)
 
 # Run Terraform with the GCP key
 - task: Bash@3
