@@ -38,22 +38,22 @@ steps:
       cd terraform-gke
       
       # Initialize Terraform
-      terraform init
+      terraform init -varfile=main.tfvars
       
-      # Validate configuration
-      terraform validate
+      # # Validate configuration
+      # terraform validate
       
-      # Plan the deployment
-      terraform plan -out=tfplan
+      # # Plan the deployment
+      # terraform plan -out=tfplan
       
-      # Apply the deployment (auto-approve for CI/CD)
-      terraform apply -auto-approve tfplan
+      # # Apply the deployment (auto-approve for CI/CD)
+      # terraform apply -auto-approve tfplan
       
-      # Get cluster credentials for kubectl
-      gcloud container clusters get-credentials test-cluster \
-        --zone europe-west4-c \
-        --$(project_id)
+      # # Get cluster credentials for kubectl
+      # gcloud container clusters get-credentials test-cluster \
+      #   --zone europe-west4-c \
+      #   --$(project_id)
       
-      # Verify cluster is running
-      kubectl get nodes
+      # # Verify cluster is running
+      # kubectl get nodes
   
