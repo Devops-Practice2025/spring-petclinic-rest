@@ -39,6 +39,7 @@ steps:
       # cd terraform-gke
       pwd
       ls -lrt
+      cd terraform-gke
       # Initialize Terraform
       # terraform init -backend-config=backend.tfvars
       
