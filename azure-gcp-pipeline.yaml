@@ -40,6 +40,10 @@ steps:
   env:
     GOOGLE_APPLICATION_CREDENTIALS: $(gcpKey.secureFilePath)
 
+- task: TerraformInstaller@1
+  inputs:
+    terraformVersion: '1.6.0'
+
 # Run Terraform with the GCP key
 - task: Bash@3
   inputs:
