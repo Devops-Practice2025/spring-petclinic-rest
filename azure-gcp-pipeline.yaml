@@ -36,7 +36,7 @@ steps:
         storage-api.googleapis.com \
         --project $(project_id)
       echo "APIs enabled; waiting 30s for propagation..."
-      sleep 30
+      
   env:
     GOOGLE_APPLICATION_CREDENTIALS: $(gcpKey.secureFilePath)
 
@@ -59,7 +59,7 @@ steps:
       # Initialize Terraform
        terraform init 
        terraform plan -var-file=main.tfvars
-       terraform apply -var-file=main.tfvars
+       terraform apply -var-file=main.tfvars --auto-approve
   env:
     GOOGLE_APPLICATION_CREDENTIALS: $(gcpKey.secureFilePath)
       
