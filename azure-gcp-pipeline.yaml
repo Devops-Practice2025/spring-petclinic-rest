@@ -3,6 +3,8 @@ trigger:
 
 pool:
   vmImage: 'ubuntu-latest'
+variables:
+  project_id: 'deft-processor-493715-k5'
 
 steps:
 - task: DownloadSecureFile@1
@@ -16,4 +18,42 @@ steps:
     script: |
       export GOOGLE_APPLICATION_CREDENTIALS=$(gcpKey.secureFilePath)
       gcloud auth activate-service-account --key-file=$(gcpKey.secureFilePath)
-      gcloud config set project deft-processor-493715-k5
+      gcloud config set project $(project_id)
+    displayName: Google Auth Vertification
+
+# Setup Terraform
+- task: TerraformInstaller@1
+  inputs:
+    terraformVersion: '1.6.0'
+
+- checkout: self
+
+# Run Terraform with the GCP key
+- task: Bash@3
+  inputs:
+    targetType: 'inline'
+    script: |
+      
+      # Navigate to Terraform directory
+      cd terraform-gke
+      
+      # Initialize Terraform
+      terraform init
+      
+      # Validate configuration
+      terraform validate
+      
+      # Plan the deployment
+      terraform plan -out=tfplan
+      
+      # Apply the deployment (auto-approve for CI/CD)
+      terraform apply -auto-approve tfplan
+      
+      # Get cluster credentials for kubectl
+      gcloud container clusters get-credentials ing-sandbox-cluster \
+        --zone europe-west4-c \
+        --project deft-processor-493715-k5
+      
+      # Verify cluster is running
+      kubectl get nodes
+  
