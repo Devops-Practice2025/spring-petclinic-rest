@@ -19,6 +19,7 @@ steps:
       export GOOGLE_APPLICATION_CREDENTIALS=$(gcpKey.secureFilePath)
       gcloud auth activate-service-account --key-file=$(gcpKey.secureFilePath)
       gcloud config set project $(project_id)
+      gcloud projects list
     
 
 # Setup Terraform
@@ -35,10 +36,11 @@ steps:
     script: |
       
       # Navigate to Terraform directory
-      cd terraform-gke
-      
+      # cd terraform-gke
+      pwd
+      ls -lrt
       # Initialize Terraform
-      terraform init -backend-config=backend.tfvars
+      # terraform init -backend-config=backend.tfvars
       
       # # Validate configuration
       # terraform validate
