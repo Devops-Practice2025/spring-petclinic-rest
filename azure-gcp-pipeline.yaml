@@ -50,9 +50,9 @@ steps:
       terraform apply -auto-approve tfplan
       
       # Get cluster credentials for kubectl
-      gcloud container clusters get-credentials ing-sandbox-cluster \
+      gcloud container clusters get-credentials test-cluster \
         --zone europe-west4-c \
-        --project deft-processor-493715-k5
+        --$(project_id)
       
       # Verify cluster is running
       kubectl get nodes
