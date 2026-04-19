@@ -38,7 +38,7 @@ steps:
       cd terraform-gke
       
       # Initialize Terraform
-      terraform init -varfile=main.tfvars
+      terraform init -backend-config=backend.tfvars
       
       # # Validate configuration
       # terraform validate
