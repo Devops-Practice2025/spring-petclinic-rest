@@ -6,6 +6,7 @@ pool:
 variables:
 - group: terraform_variables
 
+
 steps:
 - task: DownloadSecureFile@1
   name: gcpKey

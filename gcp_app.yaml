@@ -1,0 +1,140 @@
+trigger:
+  - none
+
+pool:
+- vmImage: ubuntu-lates
+
+variables:
+  # GCP configuration
+- groupVariable: terraform_variables
+  gcpRegion: 'europe-west4'
+  gkeClusterName: 'test-cluster'
+
+  # Container Registry (Artifact Registry)
+  imageName: 'petclinic-app'
+  imageTag: $(Build.BuildId)
+  # For Artifact Registry (recommended for new projects)
+  artifactRegistryRepo: 'petclinic-repo'  # Create this repo first
+  imageFullName: '$(gcpRegion)-docker.pkg.dev/$(project_id)/$(artifactRegistryRepo)/$(imageName):$(imageTag)'
+  imageLatestFullName: '$(gcpRegion)-docker.pkg.dev/$(project_id)/$(artifactRegistryRepo)/$(imageName):latest'
+
+stages:
+  - stage: Build_and_Push
+    jobs:
+      - job: Build
+        pool:
+          vmImage: ubuntu-latest
+        steps:
+          - checkout: self
+
+          # Download GCP Service Account Key
+          - task: DownloadSecureFile@1
+            name: gcpKey
+            inputs:
+              secureFile: 'gcp-key.json'
+
+          # Authenticate to GCP
+          - task: Bash@3
+            displayName: 'Authenticate to GCP'
+            inputs:
+              targetType: 'inline'
+              script: |
+                export GOOGLE_APPLICATION_CREDENTIALS=$(gcpKey.secureFilePath)
+                gcloud auth activate-service-account --key-file=$(gcpKey.secureFilePath)
+                gcloud config set project $(project_id)
+                gcloud auth configure-docker $(gcpRegion)-docker.pkg.dev
+                # If using GCR instead:
+                # gcloud auth configure-docker
+
+          - task: Maven@4
+            displayName: 'Build JAR'
+            inputs:
+              mavenPomFile: 'pom.xml'
+              goals: 'clean package'
+              options: '-DskipTests'
+              javaHomeOption: 'JDKVersion'
+              jdkVersionOption: '17'
+
+          # Build and Push Docker Image to Artifact Registry
+          - task: Bash@3
+            displayName: 'Build & Push Image to Artifact Registry'
+            inputs:
+              targetType: 'inline'
+              script: |
+                export GOOGLE_APPLICATION_CREDENTIALS=$(gcpKey.secureFilePath)
+                gcloud auth activate-service-account --key-file=$(gcpKey.secureFilePath)
+                gcloud auth configure-docker $(gcpRegion)-docker.pkg.dev
+                
+                docker build -t $(imageFullName) -t $(imageLatestFullName) .
+                
+                docker push $(imageFullName)
+                docker push $(imageLatestFullName)
+                
+                echo "Pushed images:"
+                echo "  - $(imageFullName)"
+                echo "  - $(imageLatestFullName)"
+
+  - stage: Deploy_to_GKE
+    dependsOn: Build_and_Push
+    jobs:
+      - job: Deploy
+        pool:
+          vmImage: ubuntu-latest
+        steps:
+          - checkout: self
+
+          # Download GCP credentials again for deploy stage
+          - task: DownloadSecureFile@1
+            name: gcpKey
+            inputs:
+              secureFile: 'gcp-key.json'
+
+          # Authenticate to GCP and get GKE credentials
+          - task: Bash@3
+            displayName: 'Setup GKE Authentication'
+            inputs:
+              targetType: 'inline'
+              script: |
+                export GOOGLE_APPLICATION_CREDENTIALS=$(gcpKey.secureFilePath)
+                gcloud auth activate-service-account --key-file=$(gcpKey.secureFilePath)
+                gcloud config set project $(project_id)
+                gcloud container clusters get-credentials $(gkeClusterName) --zone $(gcpRegion)
+                
+                # Verify connection
+                kubectl get nodes
+
+          - task: Bash@3
+            displayName: 'Inject Image Tag into YAML'
+            inputs:
+              targetType: 'inline'
+              script: |
+                # Update the image reference in your deployment YAML
+                # Adjust the path based on your file structure
+                sed -i 's|${IMAGE_PLACEHOLDER}|$(imageFullName)|g' aks/deploy.yaml
+                echo "Updated aks/deploy.yaml with image: $(imageFullName)"
+                
+                # Display the updated YAML for debugging (optional)
+                cat aks/deploy.yaml
+
+          - task: Bash@3
+            displayName: 'Deploy to GKE'
+            inputs:
+              targetType: 'inline'
+              script: |
+                export GOOGLE_APPLICATION_CREDENTIALS=$(gcpKey.secureFilePath)
+                gcloud auth activate-service-account --key-file=$(gcpKey.secureFilePath)
+                gcloud config set project $(project_id)
+                gcloud container clusters get-credentials $(gkeClusterName) --zone $(gcpRegion)
+                
+                # Apply all YAML files in the gke directory
+                kubectl apply -f aks/
+                
+                # Check deployment status
+                kubectl rollout status deployment/petclinic-app -n default --timeout=5m
+                
+                # Get services to see external IPs
+                kubectl get svc
+
+
+
+  

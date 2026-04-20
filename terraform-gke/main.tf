@@ -102,6 +102,14 @@ resource "google_container_node_pool" "primary_nodes" {
   }
 }
 
+resource "google_artifact_registry_repository" "my_repo" {
+  location      = "europe-west4" # Choose your region
+  repository_id = "petclinic-repo"
+  description   = "Docker repository"
+  format        = "DOCKER"
+}
+
+
 # Get cluster credentials for kubectl
 resource "null_resource" "get_credentials" {
   depends_on = [google_container_cluster.primary]

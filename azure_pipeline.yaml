@@ -66,7 +66,7 @@ stages:
 
     - script: |
         # Update the image tag in the correct path
-        sed -i 's|testacr090426.azurecr.io/petclinic-app:v1|$(acrLoginServer)/$(imageName):$(imageTag)|g' aks/deploy.yaml
+        sed -i 's|${IMAGE_PLACEHOLDER}|$(acrLoginServer)/$(imageName):$(imageTag)|g' aks/deploy.yaml
         echo "Updated aks/deploy.yaml with image: $(acrLoginServer)/$(imageName):$(imageTag)"
       displayName: Inject image 
 
