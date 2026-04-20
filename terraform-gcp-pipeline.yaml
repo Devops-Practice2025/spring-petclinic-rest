@@ -36,6 +36,7 @@ steps:
         compute.googleapis.com \
         iam.googleapis.com \
         storage-api.googleapis.com \
+        artifactregistry.googleapis.com
         --project $(project_id)
       echo "APIs enabled; waiting 30s for propagation..."
       
