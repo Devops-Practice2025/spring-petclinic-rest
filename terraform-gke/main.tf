@@ -59,11 +59,14 @@ resource "google_container_node_pool" "primary_nodes" {
   cluster    = google_container_cluster.primary.name
   
   initial_node_count = var.node_count
-  
+  version = var.node_version
   autoscaling {
     min_node_count = 1
     max_node_count = 3
   }
+
+  
+
   
   management {
     auto_repair  = true
