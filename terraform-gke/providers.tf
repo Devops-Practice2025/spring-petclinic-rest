@@ -1,6 +1,6 @@
 terraform {
   backend "gcs" {
-    bucket = "ing-sandbox-terraform-state"
+    bucket = "test-carthi-state"
     prefix = "gke/sandbox"
   }
   

@@ -21,6 +21,6 @@ gcloud services enable cloudresourcemanager.googleapis.com \
 
 gcloud services enable storage-api.googleapis.com --project=$project
 
-gcloud storage buckets create gs://test-terraform-state \
+gcloud storage buckets create gs://test-carthi-state \
     --project=$project \
     --location=europe-west4
