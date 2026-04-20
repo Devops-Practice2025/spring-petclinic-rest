@@ -59,8 +59,8 @@ steps:
       ls -lrt
       # Initialize Terraform
        terraform init -reconfigure -upgrade
-       terraform plan -var-file=main.tfvars -var="project_id= $project_id"
-       terraform apply -var-file=main.tfvars -var="project_id= $project_id" --auto-approve
+       terraform plan -var-file=main.tfvars -var="project_id=$project_id"
+       terraform apply -var-file=main.tfvars -var="project_id=$project_id" --auto-approve
   env:
     GOOGLE_APPLICATION_CREDENTIALS: $(gcpKey.secureFilePath)
       
