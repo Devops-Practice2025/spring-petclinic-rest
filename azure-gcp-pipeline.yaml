@@ -58,7 +58,7 @@ steps:
       cd terraform-gke
       ls -lrt
       # Initialize Terraform
-       terraform init 
+       terraform init -reconfigure -upgrade
        terraform plan -var-file=main.tfvars -var="project_id= $project_id"
        terraform apply -var-file=main.tfvars -var="project_id= $project_id" --auto-approve
   env:
