@@ -1,4 +1,4 @@
-project_id   = "deft-processor-493715-k5"
+
 region       = "europe-west4"
 zone         = "europe-west4-c"
 cluster_name = "test-cluster"

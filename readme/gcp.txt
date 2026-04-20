@@ -1,3 +1,26 @@
-gcloud services enable cloudresourcemanager.googleapis.com \
---project=430723993310
+gcloud auth login --login-config=one-day-sandbox-gcloud.json
 
+
+project=$(gcloud projects list | awk 'NR>2 {print $1}')
+gcloud config set project $project
+
+
+
+gcloud iam service-accounts create azure-pipeline-sa     --display-name="Azure Pipeline Service Account"
+gcloud projects add-iam-policy-binding  $project     --member="serviceAccount:azure-pipeline-sa@$project.iam.gserviceaccount.com"     --role="roles/owner"
+gcloud iam service-accounts keys create ./gcp-key.json \
+    --iam-account=azure-pipeline-sa@$project.iam.gserviceaccount.com
+
+    cp gcp-key.json /mnt/c/Users/UO85HU/Documents
+
+export GOOGLE_APPLICATION_CREDENTIALS='/home/unix/gcp-key.json'
+
+
+gcloud services enable cloudresourcemanager.googleapis.com \
+--project=$project
+
+gcloud services enable storage-api.googleapis.com --project=$project
+
+gcloud storage buckets create gs://test-terraform-state \
+    --project=$project \
+    --location=europe-west4
