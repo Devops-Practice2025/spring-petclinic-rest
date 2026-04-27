@@ -1,6 +1,6 @@
-data "azurerm_resource_group" "rg" {
+resource "azurerm_resource_group" "rg" {
   name = var.resource_group
- 
+  location = var.location
 }
  
 
@@ -8,7 +8,7 @@ resource "azurerm_container_registry" "acr" {
   
   name = var.acr_name
   location = var.location
-  resource_group_name = data.azurerm_resource_group.rg.name
+  resource_group_name = azurerm_resource_group.rg.name
   sku      = var.acr_sku
   admin_enabled = true
 
@@ -17,7 +17,7 @@ resource "azurerm_container_registry" "acr" {
 resource "azurerm_kubernetes_cluster" "aks" {
   name = var.aks_cluster_name
   location = var.location
-  resource_group_name = data.azurerm_resource_group.rg.name
+  resource_group_name = azurerm_resource_group.rg.name
   dns_prefix          = "petclinic"
   oidc_issuer_enabled       = true
   workload_identity_enabled = true
@@ -57,7 +57,7 @@ resource "azurerm_role_assignment" "aks_acr_pull" {
 # resource "azurerm_key_vault" "secrets" {
 #   name                        = var.kv_name
 #   location                    = var.location
-#   resource_group_name         = data.azurerm_resource_group.rg.name
+#   resource_group_name         = azurerm_resource_group.rg.name
 #   enabled_for_disk_encryption = true
 #   tenant_id                   = data.azurerm_client_config.current.tenant_id
 #   soft_delete_retention_days  = 7

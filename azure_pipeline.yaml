@@ -5,7 +5,7 @@ variables:
   acrLoginServer: testacr1604.azurecr.io
   imageName: petclinic-app
   imageTag: $(Build.BuildId)
-  resourceGroupName: 'nebula-sandbox-karthikeyangopal-5ae5a688'
+  resourceGroupName: 'testrg1'
   aksName: test-aks
   azureServiceConnection: test-azure
 
