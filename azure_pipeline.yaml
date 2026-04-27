@@ -2,7 +2,7 @@ trigger:
   - none
 
 variables:
-  acrLoginServer: testacr1604.azurecr.io
+  acrLoginServer: testacr2704.azurecr.io
   imageName: petclinic-app
   imageTag: $(Build.BuildId)
   resourceGroupName: 'testrg1'
