@@ -11,7 +11,7 @@ location              = "West Europe"  # Must match your RG's location
 aks_cluster_name      = "test-aks"
 acr_name              = "testacr1604"
 node_count            = 1
-node_vm_size          = "standard_ds2_v2"
+node_vm_size          = "Standard_D2ds_v5"
 acr_sku               = "Basic"
 #kv_name               = "testkv1604"
 

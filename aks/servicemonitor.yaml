@@ -7,7 +7,7 @@ metadata:
 spec:
   selector:
     matchLabels:
-      app: petclinic
+      app: petclinic-app
   endpoints:
   - port: http
     path: /petclinic/actuator/prometheus
