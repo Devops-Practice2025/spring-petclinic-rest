@@ -88,3 +88,4 @@ stages:
         command: apply
         useConfigurationFile: true
         configuration: aks/
+        nameSpace: test
