@@ -8,10 +8,11 @@ pool:
 
 variables:
   azureServiceConnection: 'test-azure'  # Using Managed Identity
-  resourceGroupName: 'nebula-sandbox-karthikeyangopal-666c9a16'
+  resourceGroupName: 'testrg1'
   terraformVersion: '1.5.7'
   terraformWorkingDir: '$(System.DefaultWorkingDirectory)/terraform'
-  backendStorageAccountName: 'tfstateacct1604'
+  backendStoragecontainerName: 'tfstateacct2704'
+  
 
 stages:
   - stage: Validate
@@ -45,9 +46,9 @@ stages:
               workingDirectory: $(terraformWorkingDir)
               backendServiceArm: $(azureServiceConnection)
               backendAzureRmResourceGroupName: $(resourceGroupName)
-              backendAzureRmStorageAccountName: $(backendStorageAccountName)
+              backendAzureRmStorageAccountName: $(backendStoragecontainerName)
               backendAzureRmContainerName: 'tfstate'
-              backendAzureRmKey: 'prod.tfstate'
+              backendAzureRmKey: 'test.tfstate'
 
 
           - task: TerraformTaskV4@4
