@@ -1,0 +1,17 @@
+grafana:
+  persistence:
+    enabled: true
+    storageClassName: "managed-csi"
+    size: 10Gi
+  adminPassword: "admin" # Change to a secure password
+prometheus:
+  prometheusSpec:
+    retention: 15d
+    storageSpec:
+      volumeClaimTemplate:
+        spec:
+          storageClassName: "managed-csi"
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: 20Gi
