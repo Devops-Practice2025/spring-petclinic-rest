@@ -5,15 +5,16 @@ metadata:
   labels:
     release: monitoring
 spec:
-  endpoints:
-    - path: /petclinic/actuator/prometheus
-      interval: 30s
-      scheme: https
-      tlsConfig:
-        insecureSkipVerify: true   # optional, if using self-signed certs
   namespaceSelector:
     matchNames:
       - default
   selector:
     matchLabels:
-      app: petclinic-service
+      app: petclinic-app   # <-- matches Service label
+  endpoints:
+    - port: http           # <-- matches Service port name
+      path: /petclinic/actuator/prometheus
+      scheme: https
+      interval: 30s
+      tlsConfig:
+        insecureSkipVerify: true   # remove if using valid certs
