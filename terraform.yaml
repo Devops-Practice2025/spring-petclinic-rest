@@ -37,6 +37,19 @@ stages:
                 az account show
                 az account get-access-token --resource https://management.azure.com/ >/dev/null
                 echo "Auth OK"
+                
+          - task: AzureCLI@2
+            displayName: 'Run Terraform Script'
+            inputs:
+              azureSubscription: 'test-azure' # Your Service Connection
+              scriptType: 'bash'
+              scriptLocation: 'inlineScript'
+              inlineScript: |
+                cd $(terraformWorkingDir)/backend
+                terraform init
+                terraform plan
+                terraform apply -auto-approve
+
 
           - task: TerraformTaskV4@4
             displayName: Terraform Init
