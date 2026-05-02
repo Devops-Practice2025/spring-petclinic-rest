@@ -16,4 +16,4 @@ spec:
       - default
   selector:
     matchLabels:
-      app: petclinic-app
+      app: petclinic-service
