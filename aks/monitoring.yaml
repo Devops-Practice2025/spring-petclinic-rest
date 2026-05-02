@@ -1,0 +1,19 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: petclinic-monitor
+  labels:
+    release: monitoring
+spec:
+  endpoints:
+    - path: /petclinic/actuator/prometheus
+      interval: 30s
+      scheme: https
+      tlsConfig:
+        insecureSkipVerify: true   # optional, if using self-signed certs
+  namespaceSelector:
+    matchNames:
+      - default
+  selector:
+    matchLabels:
+      app: petclinic-app
