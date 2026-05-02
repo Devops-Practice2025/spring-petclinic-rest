@@ -69,6 +69,13 @@ stages:
         sed -i 's|${IMAGE_PLACEHOLDER}|$(acrLoginServer)/$(imageName):$(imageTag)|g' aks/deploy.yaml
         echo "Updated aks/deploy.yaml with image: $(acrLoginServer)/$(imageName):$(imageTag)"
       displayName: Inject image 
+    
+
+    - task: KubectlInstaller@0
+      displayName: 'Install Kubectl'
+      inputs:
+        kubectlVersion: 'latest'
+
 
    
     - task: KubectlInstaller@0
@@ -79,27 +86,38 @@ stages:
     
     # 1. Install NGINX Ingress Controller
     - task: Kubernetes@1
-      displayName: Install NGINX Ingress
+      displayName: 'Apply NGINX Ingress'
       inputs:
-        connectionType: Azure Resource Manager
-        azureSubscriptionEndpoint: test-azure
-        azureResourceGroup: $(resourceGroupName)
-        kubernetesCluster: $(aksName)
-        command: custom
-        customCommand: apply
-        arguments: -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/cloud/deploy.yaml
+        connectionType: 'Azure Resource Manager'
+        azureSubscriptionEndpoint: 'test-azure'
+        azureResourceGroup: '$(resourceGroupName)'
+        kubernetesCluster: '$(aksName)'
+        command: 'apply'
+        useConfigurationFile: false
+        arguments: '-f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/cloud/deploy.yaml'
+
+    - task: Kubernetes@1
+      displayName: 'Apply cert-Manager'
+      inputs:
+        connectionType: 'Azure Resource Manager'
+        azureSubscriptionEndpoint: 'test-azure'
+        azureResourceGroup: '$(resourceGroupName)'
+        kubernetesCluster: '$(aksName)'
+        command: 'apply'
+        useConfigurationFile: false
+        arguments: -f https://github.com/cert-manager/cert-manager/releases/download/v1.13.6/cert-manager.yaml
 
     # 2. Install Cert-Manager
-    - task: Kubernetes@1
-      displayName: Install Cert-Manager
-      inputs:
-        connectionType: Azure Resource Manager
-        azureSubscriptionEndpoint: test-azure
-        azureResourceGroup: $(resourceGroupName)
-        kubernetesCluster: $(aksName)
-        command: custom
-        customCommand: apply
-        arguments: -f https://github.com/cert-manager/cert-manager/releases/download/v1.13.6/cert-manager.yaml
+    # - task: Kubernetes@1
+    #   displayName: Install Cert-Manager
+    #   inputs:
+    #     connectionType: Azure Resource Manager
+    #     azureSubscriptionEndpoint: test-azure
+    #     azureResourceGroup: $(resourceGroupName)
+    #     kubernetesCluster: $(aksName)
+    #     command: custom
+    #     customCommand: apply
+    #     arguments: -f https://github.com/cert-manager/cert-manager/releases/download/v1.13.6/cert-manager.yaml
 
   
 
