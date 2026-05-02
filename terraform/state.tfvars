@@ -1,4 +1,3 @@
-resource_group_name  = "nebula-sandbox-karthikeyangopal-666c9a16"
 storage_account_name = "tfstateacct1604"
 container_name       = "tfstate"
 key                  = "test.tfstate"
