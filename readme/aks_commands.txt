@@ -1,0 +1,23 @@
+Storage creation:
+--------------------------------
+
+RG=$(az group list -o table | awk 'NR>2 {print $1}')
+ID=$(az identity list  -o table| awk 'NR>2 {print $1}')
+SUB=$(az account list -o table | grep -i true | awk '{print $3}')
+-------------------
+az role assignment create     --role "Storage Blob Data Contributor"     --assignee $ID   --scope "/subscriptions/$SUB/resourceGroups/$RG/providers/Microsoft.Storage/storageAccounts/tfstateacct1604"
+
+az storage account create --name tfstateacct020526 --resource-group $(az group list --query [].name --output tsv) --location westeurope --sku Standard_LRS
+
+az storage container create   --name tfstate   --account-name $(az storage account list --query [].name -o tsv)   --auth-mode login
+
+------------------
+
+az storage account create --name tfstateacct020526 --resource-group testrg1 --location westeurope --sku Standard_LRS
+az storage container create   --name tfstate   --account-name tfstateacct020526   --auth-mode login
+
+
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/cloud/deploy.yaml
+kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.13.6/cert-manager.yaml
+
+helm install ingress-nginx ingress-nginx/ingress-nginx   --namespace ingress-nginx   --create-namespace   --set controller.service.type=LoadBalancer
