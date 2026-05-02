@@ -11,7 +11,7 @@ variables:
   resourceGroupName: 'testrg1'
   terraformVersion: '1.5.7'
   terraformWorkingDir: '$(System.DefaultWorkingDirectory)/terraform'
-  backendStoragecontainerName: 'tfstateacct2704'
+  backendStoragecontainerName: 'tfstateacct020526'
   
 
 stages:
