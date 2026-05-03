@@ -10,6 +10,6 @@ spec:
   selector:
     app: petclinic-app
   ports:
-    - name: http
+    - name: https
       port: 9966
       targetPort: 9966
