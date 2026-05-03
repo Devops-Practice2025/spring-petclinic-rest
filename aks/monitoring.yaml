@@ -14,7 +14,7 @@ spec:
   endpoints:
     - port: http           # <-- matches Service port name
       path: /petclinic/actuator/prometheus
-      scheme: https
+      scheme: http
       interval: 30s
       tlsConfig:
         insecureSkipVerify: true   # remove if using valid certs
